@@ -1,0 +1,296 @@
+# Configuration templates for different experiment scenarios: unimodal, multimodal, context variations
+
+# Base configuration - common settings
+base: &base
+  # Data settings
+  data_file: "data/combined_handcrafted_features.csv"
+  label_column: "label"
+  num_classes: 2
+
+  # Training settings
+  batch_size: 16
+  max_epochs: 20
+  patience: 3
+  num_workers: 4
+
+  # Experiment settings
+  use_kfold: true
+  k_folds: 5
+  project_name: "emnlp-oir-repair-initiation-classifier"
+
+# Pretrained Text-only experiment
+text_only:
+  <<: *base
+  output_dir: "./output_text_only"
+  experiment_name: "text_only_classifier"
+
+  # Modalities
+  use_text: true
+  use_audio: false
+  use_linguistic: false
+  use_prosodic: false
+
+  # Text model settings
+  model_name: "pdelobelle/robbert-v2-dutch-base"
+  context_mode: "none"
+  context_window: 0
+  use_special_tokens: false
+  max_length: 512
+
+  # Training
+  batch_size: 16
+  learning_rate: 2e-5
+
+# Pretrained Audio-only experiment
+audio_only:
+  <<: *base
+  output_dir: "./output_audio_only"
+  experiment_name: "audio_only_classifier"
+
+  # Data
+  audio_folder: "data/audio"
+
+  # Modalities
+  use_text: false
+  use_audio: true
+  use_linguistic: false
+  use_prosodic: false
+
+  # Audio model settings
+  whisper_model_name: "openai/whisper-base"
+
+  # Training
+  batch_size: 16
+  learning_rate: 0.001
+
+# Handcrafted Linguistic features only
+linguistic_only:
+  <<: *base
+  output_dir: "./output_linguistic_only"
+  experiment_name: "linguistic_only_classifier"
+
+  # Modalities
+  use_text: false
+  use_audio: false
+  use_linguistic: true
+  use_prosodic: false
+
+  # Training
+  learning_rate: 0.001
+
+# Handcrafted Prosodic features only
+prosodic_only:
+  <<: *base
+  output_dir: "./output_prosodic_only"
+  experiment_name: "prosodic_only_classifier"
+
+  # Modalities
+  use_text: false
+  use_audio: false
+  use_linguistic: false
+  use_prosodic: true
+
+  # Training
+  learning_rate: 0.001
+
+# Pretrained Text + Audio multimodal
+text_audio:
+  <<: *base
+  output_dir: "./output_text_audio"
+  experiment_name: "text_audio_classifier"
+
+  # Data
+  audio_folder: "data/audio"
+
+  # Modalities
+  use_text: true
+  use_audio: true
+  use_linguistic: false
+  use_prosodic: false
+
+  # Model settings
+  model_name: "pdelobelle/robbert-v2-dutch-base"
+  whisper_model_name: "openai/whisper-base"
+  context_mode: "none"
+  context_window: 0
+  use_special_tokens: false
+
+  # Fusion settings
+  fusion_method: "cross_attention"
+  fusion_hidden_size: 128
+  num_fusion_heads: 4
+
+  # Training
+  batch_size: 16
+  learning_rate: 2e-5
+
+# Handcrafted Linguistic + Prosodic features
+handcrafted_multimodal:
+  <<: *base
+  output_dir: "./output_handcrafted_multimodal"
+  experiment_name: "handcrafted_multimodal_classifier"
+
+  # Modalities
+  use_text: false
+  use_audio: false
+  use_linguistic: true
+  use_prosodic: true
+
+  # Fusion settings
+  fusion_method: "cross_attention"
+  fusion_hidden_size: 128
+  num_fusion_heads: 4
+
+  # Training
+  learning_rate: 0.001
+
+# Full multimodal - all features
+full_multimodal:
+  <<: *base
+  output_dir: "./output_full_multimodal"
+  experiment_name: "full_multimodal_classifier"
+
+  # Data
+  audio_folder: "data/audio"
+
+  # Modalities
+  use_text: true
+  use_audio: true
+  use_linguistic: true
+  use_prosodic: true
+
+  # Model settings
+  model_name: "pdelobelle/robbert-v2-dutch-base"
+  whisper_model_name: "openai/whisper-base"
+  context_mode: "both"
+  context_window: "max"
+  use_special_tokens: true
+
+  # Fusion settings
+  fusion_method: "cross_attention"
+  fusion_hidden_size: 256
+  num_fusion_heads: 8
+
+  # Training
+  batch_size: 16
+  learning_rate: 1e-5
+
+# Micro context experiments
+context_experiments:
+  # Past context only
+  past_context_max:
+    <<: *base
+    output_dir: "./output_past_context_max"
+    experiment_name: "past_context_classifier_max"
+
+    audio_folder: "data/audio"
+    use_text: true
+    use_audio: true
+    use_linguistic: true
+    use_prosodic: true
+
+    model_name: "pdelobelle/robbert-v2-dutch-base"
+    whisper_model_name: "openai/whisper-base"
+
+    context_mode: "past"
+    context_window: "max"
+    use_special_tokens: true
+
+    batch_size: 16
+    learning_rate: 2e-5
+
+  past_context_win_2:
+    <<: *base
+    output_dir: "./output_past_context_win_2"
+    experiment_name: "past_context_classifier_win_2"
+
+    audio_folder: "data/audio"
+    use_text: true
+    use_audio: true
+    use_linguistic: true
+    use_prosodic: true
+
+    model_name: "pdelobelle/robbert-v2-dutch-base"
+    whisper_model_name: "openai/whisper-base"
+
+    context_mode: "past"
+    context_window: 2
+    use_special_tokens: true
+
+    batch_size: 16
+    learning_rate: 2e-5
+
+  # Future context only
+  future_context_max:
+    <<: *base
+    output_dir: "./output_future_context_max"
+    experiment_name: "future_context_classifier_max"
+
+    audio_folder: "data/audio"
+    use_text: true
+    use_audio: true
+    use_linguistic: true
+    use_prosodic: true
+
+    model_name: "pdelobelle/robbert-v2-dutch-base"
+    whisper_model_name: "openai/whisper-base"
+
+    context_mode: "future"
+    context_window: "max"
+    use_special_tokens: true
+
+    batch_size: 16
+    learning_rate: 2e-5
+
+  both_context_win_2:
+    <<: *base
+    output_dir: "./both_context_win_2"
+    experiment_name: "both_context_classifier_win_2"
+
+    audio_folder: "data/audio"
+    use_text: true
+    use_audio: true
+    use_linguistic: true
+    use_prosodic: true
+
+    model_name: "pdelobelle/robbert-v2-dutch-base"
+    whisper_model_name: "openai/whisper-base"
+
+    context_mode: "both"
+    context_window: 2
+    use_special_tokens: true
+
+    batch_size: 16
+    learning_rate: 2e-5
+
+
+  # No context
+  no_context:
+    <<: *base
+    output_dir: "./output_no_context"
+    experiment_name: "no_context_classifier"
+
+    audio_folder: "data/audio"
+    use_text: true
+    use_audio: true
+    use_linguistic: true
+    use_prosodic: true
+
+    model_name: "pdelobelle/robbert-v2-dutch-base"
+    whisper_model_name: "openai/whisper-base"
+
+    context_mode: "none"
+    context_window: 0
+    use_special_tokens: false
+
+    batch_size: 16
+    learning_rate: 2e-5
+
+
+# Hyperparameter search
+hyperparameter_search:
+  learning_rates: [1e-5, 2e-5, 5e-5, 1e-4, 2e-4]
+  batch_sizes: [8, 16, 32]
+  context_windows: [2, 4, "max"]
+  fusion_hidden_sizes: [64, 128, 256, 512]
+  num_fusion_heads: [2, 4, 8]
