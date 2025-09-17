@@ -6,7 +6,7 @@ def run_text_only_experiment():
     """Unimodal: pretrained text embeddings model only."""
     config = ExperimentConfig(
         # Data
-        data_file="data/cabb_subset.csv",
+        data_file="data/combined_handcrafted_features.csv",
         output_dir="./output_text_only",
 
         # Modalities
@@ -39,7 +39,7 @@ def run_audio_only_experiment():
     """Unimodal: pretrained audio embeddings model only."""
     config = ExperimentConfig(
         # Data
-        data_file="data/cabb_subset.csv",
+        data_file="data/combined_handcrafted_features.csv",
         audio_folder="data/audio",
         output_dir="./output_audio_only",
 
@@ -127,7 +127,7 @@ def run_text_audio_multimodal_experiment():
     """Multimodal: pretrained embeddings text+audio multimodal experiment."""
     config = ExperimentConfig(
         # Data
-        data_file="data/cabb_subset.csv",
+        data_file="data/combined_handcrafted_features.csv",
         audio_folder="data/audio",
         output_dir="./output_pretrained_text_audio",
 
@@ -214,8 +214,8 @@ def run_full_multimodal_experiment():
         # Model settings
         model_name="pdelobelle/robbert-v2-dutch-base",
         whisper_model_name="openai/whisper-base",
-        context_mode="none",
-        context_window="0",
+        context_mode="both",
+        context_window="max",
         use_special_tokens=False,
 
         # Fusion settings
