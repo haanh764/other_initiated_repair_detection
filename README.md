@@ -1,4 +1,5 @@
 # "Mm, Wat?" Detecting Other-initiated Repair Requests in Dialogue
+https://arxiv.org/abs/2510.24628
 🗣️ **Other-Initiated Repair in Spoken Dialogues** | 🎯 **Multimodal Other Repair Initiation Detection**  |  🤖 **Task-oriented Dialogues**
 
 ## 📋 Overview
